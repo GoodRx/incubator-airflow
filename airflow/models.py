@@ -1136,7 +1136,6 @@ class TaskInstance(Base):
         self.test_mode = test_mode
         self.force = force
         self.refresh_from_db(session=session, lock_for_update=True)
-        self.clear_xcom_data()
         self.job_id = job_id
         iso = datetime.now().isoformat()
         self.hostname = socket.gethostname()
@@ -1166,6 +1165,7 @@ class TaskInstance(Base):
                 "Next run after {0}".format(next_run)
             )
         elif force or self.state in State.runnable():
+            self.clear_xcom_data()
             HR = "\n" + ("-" * 80) + "\n"  # Line break
 
             # For reporting purposes, we report based on 1-indexed,

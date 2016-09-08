@@ -1,15 +1,15 @@
 Security
 ========
 
-Web Authentication
-------------------
-
 By default, all gates are opened. An easy way to restrict access
 to the web application is to do it at the network level, or by using
 SSH tunnels.
 
 It is however possible to switch on authentication by either using one of the supplied
 backends or create your own.
+
+Web Authentication
+------------------
 
 Password
 ''''''''
@@ -110,6 +110,7 @@ created by itself.
 
 Kerberos
 --------
+
 Airflow has initial support for Kerberos. This means that airflow can renew kerberos
 tickets for itself and store it in the ticket cache. The hooks and dags can make use of ticket
 to authenticate against kerberized services.
@@ -214,6 +215,9 @@ and in your DAG, when initializing the HiveOperator, specify
 
     run_as_owner=True
 
+OAuth Authentication
+--------------------
+
 GitHub Enterprise (GHE) Authentication
 ''''''''''''''''''''''''''''''''''''''
 
@@ -239,7 +243,7 @@ your GHE installation will be able to login to Airflow.
     allowed_teams = example_team_1, example_team_2
 
 Setting up GHE Authentication
-'''''''''''''''''''''''''''''
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 An application must be setup in GHE before you can use the GHE authentication
 backend. In order to setup an application:
@@ -251,3 +255,36 @@ backend. In order to setup an application:
 5. Fill in the required information (the 'Authorization callback URL' must be fully qualifed e.g. http://airflow.example.com/example/ghe_oauth/callback)
 6. Click 'Register application'
 7. Copy 'Client ID', 'Client Secret', and your callback route to your airflow.cfg according to the above example
+
+Google Authentication
+'''''''''''''''''''''
+
+The Google authentication backend can be used to authenticate users
+against Google using OAuth2. You must specify a domain to restrict login
+to only members of that domain.
+
+.. code-block:: bash
+
+    [webserver]
+    authenticate = True
+    auth_backend = airflow.contrib.auth.backends.google_auth
+
+    [google]
+    client_id = google_client_id
+    client_secret = google_client_secret
+    oauth_callback_route = /oauth2callback
+    domain = example.com
+
+Setting up Google Authentication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An application must be setup in the Google API Console before you can use the Google authentication
+backend. In order to setup an application:
+
+1. Navigate to https://console.developers.google.com/apis/
+2. Select 'Credentials' from the left hand nav
+3. Click 'Create credentials' and choose 'OAuth client ID'
+4. Choose 'Web application'
+5. Fill in the required information (the 'Authorized redirect URIs' must be fully qualifed e.g. http://airflow.example.com/oauth2callback)
+6. Click 'Create'
+7. Copy 'Client ID', 'Client Secret', and your redirect URI to your airflow.cfg according to the above example

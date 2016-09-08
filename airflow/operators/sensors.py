@@ -16,6 +16,8 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 from builtins import str
+from past.builtins import basestring
+
 from datetime import datetime
 import logging
 from urllib.parse import urlparse
@@ -90,6 +92,7 @@ class SqlSensor(BaseSensorOperator):
     """
     template_fields = ('sql',)
     template_ext = ('.hql', '.sql',)
+    ui_color = '#7c7287'
 
     @apply_defaults
     def __init__(self, conn_id, sql, *args, **kwargs):
@@ -133,6 +136,7 @@ class MetastorePartitionSensor(SqlSensor):
     :type mysql_conn_id: str
     """
     template_fields = ('partition_name', 'table', 'schema')
+    ui_color = '#8da7be'
 
     @apply_defaults
     def __init__(
@@ -188,6 +192,7 @@ class ExternalTaskSensor(BaseSensorOperator):
         or execution_date_fn can be passed to ExternalTaskSensor, but not both.
     :type execution_date_fn: callable
     """
+    ui_color = '#19647e'
 
     @apply_defaults
     def __init__(
@@ -243,10 +248,11 @@ class NamedHivePartitionSensor(BaseSensorOperator):
 
     :param partition_names: List of fully qualified names of the
         partitions to wait for. A fully qualified name is of the
-        form schema.table/pk1=pv1/pk2=pv2, for example,
+        form ``schema.table/pk1=pv1/pk2=pv2``, for example,
         default.users/ds=2016-01-01. This is passed as is to the metastore
-        Thrift client "get_partitions_by_name" method. Note that
-        you cannot use logical operators as in HivePartitionSensor.
+        Thrift client ``get_partitions_by_name`` method. Note that
+        you cannot use logical or comparison operators as in
+        HivePartitionSensor.
     :type partition_names: list of strings
     :param metastore_conn_id: reference to the metastore thrift service
         connection id
@@ -254,6 +260,7 @@ class NamedHivePartitionSensor(BaseSensorOperator):
     """
 
     template_fields = ('partition_names', )
+    ui_color = '#8d99ae'
 
     @apply_defaults
     def __init__(
@@ -268,9 +275,6 @@ class NamedHivePartitionSensor(BaseSensorOperator):
 
         if isinstance(partition_names, basestring):
             raise TypeError('partition_names must be an array of strings')
-
-        for partition_name in partition_names:
-            self.parse_partition_name(partition_name)
 
         self.metastore_conn_id = metastore_conn_id
         self.partition_names = partition_names
@@ -313,7 +317,7 @@ class HivePartitionSensor(BaseSensorOperator):
     """
     Waits for a partition to show up in Hive.
 
-    Note: Because @partition supports general logical operators, it
+    Note: Because ``partition`` supports general logical operators, it
     can be inefficient. Consider using NamedHivePartitionSensor instead if
     you don't need the full flexibility of HivePartitionSensor.
 
@@ -321,15 +325,16 @@ class HivePartitionSensor(BaseSensorOperator):
         notation (my_database.my_table)
     :type table: string
     :param partition: The partition clause to wait for. This is passed as
-        is to the metastore Thrift client "get_partitions_by_filter" method,
-        and apparently supports SQL like notation as in `ds='2015-01-01'
-        AND type='value'` and > < sings as in "ds>=2015-01-01"
+        is to the metastore Thrift client ``get_partitions_by_filter`` method,
+        and apparently supports SQL like notation as in ``ds='2015-01-01'
+        AND type='value'`` and comparison operators as in ``"ds>=2015-01-01"``
     :type partition: string
     :param metastore_conn_id: reference to the metastore thrift service
         connection id
     :type metastore_conn_id: str
     """
     template_fields = ('schema', 'table', 'partition',)
+    ui_color = '#2b2d42'
 
     @apply_defaults
     def __init__(
@@ -366,6 +371,7 @@ class HdfsSensor(BaseSensorOperator):
     Waits for a file or folder to land in HDFS
     """
     template_fields = ('filepath',)
+    ui_color = '#4d9de0'
 
     @apply_defaults
     def __init__(

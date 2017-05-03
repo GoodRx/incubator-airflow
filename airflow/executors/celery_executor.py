@@ -30,6 +30,10 @@ class CeleryConfig(object):
     CELERY_DEFAULT_QUEUE = DEFAULT_QUEUE
     CELERY_DEFAULT_EXCHANGE = DEFAULT_QUEUE
 
+    # Override the CELERY_TASK_RESULT_EXPIRES so tasks result queues are cleaned
+    # up sooner
+    CELERY_TASK_RESULT_EXPIRES = 60
+
 app = Celery(
     configuration.get('celery', 'CELERY_APP_NAME'),
     config_source=CeleryConfig)

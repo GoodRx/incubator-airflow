@@ -1,4 +1,3 @@
-from builtins import str
 from datetime import datetime
 import logging
 
@@ -64,7 +63,7 @@ class PythonOperator(BaseOperator):
             self.op_kwargs = context
 
         return_value = self.python_callable(*self.op_args, **self.op_kwargs)
-        logging.info("Done. Returned value was: " + str(return_value))
+        logging.info("Done. Returned value was: %s", return_value)
         return return_value
 
 
